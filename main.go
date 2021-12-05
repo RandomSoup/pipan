@@ -26,13 +26,13 @@ func main() {
 	rl.SetTargetFPS(60)
 	font = rl.LoadFont("data/font.ttf")
 	profiles = append(profiles, PipanProfile{
-		"A Test Profile", true, "tiny", "AUsername", make(map[string]bool),
+		"A Test Profile", true, "Tiny", "AUsername", make(map[string]bool),
 	})
 	profiles = append(profiles, PipanProfile{
-		"Test 2: Electric Boogalo", false, "tiny", "AUsername", make(map[string]bool),
+		"Test 2: Electric Boogalo", false, "Tiny", "AUsername", make(map[string]bool),
 	})
 	profiles = append(profiles, PipanProfile{
-		"Three's a crowd", true, "tiny", "AUsername", make(map[string]bool),
+		"Three's a crowd", true, "Tiny", "AUsername", make(map[string]bool),
 	})
 	for !rl.WindowShouldClose() {
 
