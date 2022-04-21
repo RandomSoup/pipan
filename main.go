@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"runtime"
+  "sync"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/luminoso-256/pipan/libmcpi"
@@ -20,7 +21,11 @@ var (
 	cSelProfile = 0
 )
 
+var wg *sync.WaitGroup
+
 func main() {
+  /* Wait until the command is done. */
+  defer wg.Wait()
 	rl.SetConfigFlags(rl.FlagWindowResizable)
 	rl.InitWindow(800, 450, "Pipan")
 	rl.SetTargetFPS(60)
@@ -51,7 +56,7 @@ func main() {
 			if rl.IsKeyDown(rl.KeyUp) && cSelProfile > 0 {
 				cSelProfile -= 1
 			}
-			if rl.IsKeyDown(rl.KeyDown) && cSelProfile < len(profiles) {
+			if rl.IsKeyDown(rl.KeyDown) && cSelProfile < len(profiles)-1 {
 				cSelProfile += 1
 			}
 			if rl.IsKeyDown(rl.KeyEnter) {
@@ -66,8 +71,9 @@ func main() {
 					profiles[cSelProfile].Username,
 					profiles[cSelProfile].RendDist,
 					"minecraft-pi-reborn-client",
-				}
-				lp.Launch()
+				} 
+				var wg = lp.Launch()
+        break
 			}
 		}
 
@@ -87,9 +93,9 @@ func main() {
 					name = fmt.Sprintf("[%d] %s (vanilla)", i, profile.Name)
 				}
 				if i == cSelProfile {
-					rl.DrawTextEx(font, name, rl.Vector2{5, pfX}, 16, 3, rl.Red)
+					rl.DrawTextEx(font, name, rl.Vector2{5, pfX}, 16, 3, rl.Orange)
 				} else {
-					rl.DrawTextEx(font, name, rl.Vector2{5, pfX}, 16, 3, rl.Maroon)
+					rl.DrawTextEx(font, name, rl.Vector2{5, pfX}, 16, 3, rl.Red)
 				}
 				pfX += 18
 			}
@@ -126,6 +132,6 @@ func main() {
 		}
 
 		rl.EndDrawing()
-	}
 
+	}
 }
