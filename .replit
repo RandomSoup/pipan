@@ -1,5 +1,5 @@
-language = "go"
-run = "clear;go build && ./pipan"
+language = "nix"
+run = "clear;echo 1;go build&&(clear;echo 2;./pipan)"
 
 # Specifies which nix channel to use when building the environment.
 [nix]

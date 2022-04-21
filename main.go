@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"runtime"
-  "sync"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/luminoso-256/pipan/libmcpi"
@@ -21,11 +20,7 @@ var (
 	cSelProfile = 0
 )
 
-var wg *sync.WaitGroup
-
 func main() {
-  /* Wait until the command is done. */
-  defer wg.Wait()
 	rl.SetConfigFlags(rl.FlagWindowResizable)
 	rl.InitWindow(800, 450, "Pipan")
 	rl.SetTargetFPS(60)
@@ -73,6 +68,7 @@ func main() {
 					"minecraft-pi-reborn-client",
 				} 
 				var wg = lp.Launch()
+        defer wg.Wait()
         break
 			}
 		}

@@ -1,2 +1,7 @@
+# Compiled versions of pipan
 *.exe
 pipan
+
+# Replit
+.replit
+replit.nix
