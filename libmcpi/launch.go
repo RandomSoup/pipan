@@ -11,6 +11,8 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+  "time"
+  "sync"
 )
 
 const (
@@ -27,14 +29,13 @@ type LaunchProfile struct {
 	ExectuableName string
 }
 
-func (l *LaunchProfile) Launch() {
+func (l *LaunchProfile) Launch() *sync.WaitGroup {
 	//if we're not on linux, abort and dummy out because *mcpi doesn't run on windows*
 	if runtime.GOOS != "linux" {
 		fmt.Println("[libmcpi] [warn] launch() was called on a LaunchProfile. This has been dummied out due to the platform not being Linux")
-		return
 	}
 	//otherwise carry on
-	fmt.Printf("[libmcpi] [info] launch() has been called.\nFeature Flags:%v\nUseranme:%v\nRender Distance:%v\n", l.FeatureFlags, l.Username, l.RendDistance)
+	fmt.Printf("[libmcpi] [info] launch() has been called.\n\tFeature Flags: %v\n\tUseranme: %v\n\tRender Distance: %v\n", l.FeatureFlags, l.Username, l.RendDistance)
 
 	//generate the string for ff env var from our list
 	featuresEnvVal := ""
@@ -57,13 +58,22 @@ func (l *LaunchProfile) Launch() {
 	fmt.Println("[libmcpi] [info] starting MCPI process and detaching")
 	//run async in a frankly cursed way
 	//TODO: there *must* be a better way to do this...
-	go cmdRunHolder(cmd)
+	wg := cmdRunHolder(cmd)
+  return wg
 }
 
-func cmdRunHolder(cmd *exec.Cmd) {
-	cmd.Run()
-	for {
-	}
+func cmdRunHolder(cmd *exec.Cmd) *sync.WaitGroup {
+  var wg sync.WaitGroup
+  wg.Add(1)
+  go func(){
+    time.Sleep(time.Second/10)
+	  err := cmd.Run()
+    if (err != nil){
+      fmt.Printf("[libmcpi] [error] %v\n", err)
+    }
+    wg.Done()
+  }()
+  return &wg
 }
 
 func execLog(inPipe io.ReadCloser) {
